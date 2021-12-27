@@ -13,42 +13,34 @@ int acarrero = 1;
 "]"                                     { return RIGHTBRACKET; }
 "("                                     { return LEFTPAR; }
 ")"                                     { return RIGHTPAR; }
-";"                                     { return ENDLINE; }
+";"                                     { return DAC; }
 ","                                     { return COMMA; }
 "="                                     { return ASIGN; }
-"input "                                { return INPUT; }
-"output"                                { return OUTPUT; }
 "return"                                { return RETURN; }
-"var"                                   { return VAR; }
 "main"                                  { return MAIN; }
 "int"                                   { return PRIMITIVE; }
 "float"                                 { return PRIMITIVE; }
 "char"                                  { return PRIMITIVE; }
-"bool"                                  { return PRIMITIVE; }
-"list of"                               { return ESTRUCTURE; }
+"bool"					{ return PRIMITIVE;}
 "if"                                    { return IF; }
 "while"                                 { return WHILE; }
 "else"                                  { return ELSE; }
-">>"|"<<"                               {return OPERLIST;}
-"*"|"/"                                 {return MULDIV;}
-"%"|"^"                                 {return PORPOW;}
-"=="|"!="                               {return EQN;}
-%"**"                                    {return PORPOR;} ??
-"and"                                   {return ANDLOG;}
-"or"                                    {return ORLOG;}
-"xor"                                   {return XOR;}
+"*"|"/"                                 {return OPER;}
+"%"|"^"                                 {return OPER;}
+"=="|"!="                               {return REL;}
+
+"and"                                   {return LOG;}
+"or"                                    {return LOG;}
+
 "<"|">"|"<="|">="                       {return REL;}
-"--"                                    {return MINUSMINUS; }
-"++"                                    {return OPERPLUSPLUS; }
-"+"|"-"                                   {return PLUSMINUS;}
-"//*"                                    {return COMMENT; }
-"?"                                     {return QUESTION; }
-"not"                                   {return NOT; }
-%"$"                                     {return DOLLAR; }
+"--"                                    {return DOUBLEOPER; }
+"++"                                    {return DOUBLEOPER; }
+"+"|"-"                                   {return OPER;}
 \"[^\"]*\"                              {return STRING; }
 ([0-9]+)|([0-9]*\.[0-9]*)|"true"|"false"|\'[^\']\'                              { return CONSTANT; }
 [a-z|A-Z][a-z|A-Z|0-9|_]*                                                            { return ID; }
-<*>.|\n                            { printf("Error en la línea %d. Lexema %s no reconocible.\n", yylineno, yytext); }
+
+<*>.|\n                            { printf("Error in line %d.  %s is not recognizable.\n", yylineno, yytext); }
 %%
 /*
     int main (){
