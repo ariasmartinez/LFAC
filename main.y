@@ -4,16 +4,13 @@ extern FILE* yyin;
 extern char* yytext;
 extern int yylineno;
 %}
-
-
-%start programm
+%start progr
 %token STARTBLOCK
 %token ENDBLOCK
 %token LEFTBRACKET
 %token RIGHTBRACKET
 %token LEFTPAR
 %token RIGHTPAR
-%token DAC
 %token COMMA
 %token ASSIGN
 %token RETURN
@@ -28,86 +25,100 @@ extern int yylineno;
 %token LOG
 %token DOUBLEOPER
 %token STRING
-%token CONSTANT
+%token BOOL
 %token ID
 %token CTE
 %token NUMBER
 %token PRINT
 %token VOID
 %%
-global_var: global_var global_var | decl_init ;
 
-decl_init: decl_var | decl_var_array | init_var | init_var_array | init_cte | init_cte_array ;
 
-local_var : local_var local_var | decl_init ;
+progr : all_vars functions MAIN  block ;
+
+all_vars: all_vars var | var ;
+
+var: decl_var | decl_var_array | init_var | init_var_array | init_cte | init_cte_array ;
+
 
 functions: functions decl_function | decl_function  ;
 
-programm: global_var functions MAIN LEFTPAR RIGHTPAR block ;
+
 
 block: STARTBLOCK inside_block ENDBLOCK ;
 
-inside_block: inside_block inside_block | local_var | statements | print_function | function ;
+inside_block: inside_block statement | statement ;
 
-
-
-//declaration var
-decl_var : TIP ID DAC ;
-//declaration var array
-decl_var_array : TIP LEFTBRACKET RIGHTBRACKET  ID DAC ;
-//initialization var
-init_var: ID ASSIGN CONSTANT ;
-//initialization var array
-init_var_array: ID ASSIGN LEFTBRACKET inside_array RIGHTBRACKET ;
-//array, used in init_var
-inside_array: inside_array COMMA inside_array | CONSTANT ;
-
-//initialization cte
-init_cte: CTE TIP ID ASSIGN CONSTANT ;
-//initialization cte array
-init_cte_array: CTE TIP ID LEFTBRACKET RIGHTBRACKET ASSIGN LEFTBRACKET inside_array RIGHTBRACKET ;
-
-//declaration function
-decl_function: return_type ID LEFTPAR parameters RIGHTPAR LEFTBRACKET block RETURN DAC RIGHTBRACKET ;
+//int person(...) block
+decl_function: return_type ID LEFTPAR parameters RIGHTPAR STARTBLOCK inside_block RETURN ID ';' ENDBLOCK 
+		| return_type ID LEFTPAR parameters RIGHTPAR block;
 
 //what the function returns
 return_type: TIP | VOID ;
-
-//parameters in declaration function
+  
+//parameters in declaration function  ->  int a, char b
 parameters: parameters COMMA parameters | TIP ID ;
 
-//call a funcion
-function: ID LEFTPAR arguments RIGHTPAR DAC ;
+//call a funcion -> person(...);
+function: ID LEFTPAR arguments RIGHTPAR ';';
 
+//arguments in call function -> a,b
 arguments: arguments COMMA arguments | ID ;
 
-statements: statements statement  ;
 
-statement: if_statement | for_statement | while_statement ;
+/*int a;*/
+decl_var : TIP ID ';' ;
+//int a[];
+decl_var_array : TIP ID LEFTBRACKET RIGHTBRACKET ';' ;
+// a = 9; or a = 1+2;
+init_var: ID ASSIGN id_constant ';'  | ID ASSIGN math ';' ;
+//  a = [...];
+init_var_array: ID ASSIGN LEFTBRACKET inside_array RIGHTBRACKET ';' ;
+//9, a, "hello"
+inside_array: inside_array COMMA inside_array | id_constant | ID | STRING ;
 
-if_statement: IF LEFTPAR id_constant REL  id_constant RIGHTPAR block else_statement ;
+//const int a = 9; or int a = 1+2;
+init_cte: CTE TIP ID ASSIGN id_constant  ";" | CTE TIP ID ASSIGN math  ';'  ;
+//const int a[] = [...];
+init_cte_array: CTE TIP ID LEFTBRACKET RIGHTBRACKET ASSIGN LEFTBRACKET inside_array RIGHTBRACKET ';' ;
 
-id_constant : ID|CONSTANT ;
+
+
+
+statement: if_statement | for_statement | while_statement | all_vars | print_function | function;
+
+// if(a == 9) block else
+if_statement: IF LEFTPAR id_constant REL id_constant RIGHTPAR block else_statement ;
+
+
+
+id_constant : ID|NUMBER|BOOL|STRING ;
+
+number_id : NUMBER | ID
 
 else_statement: ELSE block ;
 
-
+// for () block
 for_statement: FOR LEFTPAR for_condition RIGHTPAR block ;
 
-for_condition: ID ASSIGN NUMBER DAC ID REL DAC ID DOUBLEOPER ;
+//a = 1; a < 5; a++
+for_condition: ID ASSIGN NUMBER ';' ID REL NUMBER ';' ID DOUBLEOPER ;
 
+//while() block
 while_statement: WHILE LEFTPAR condition RIGHTPAR block ;
 
-condition: id_constant REL id_constant  ;
+//a < 9
+condition: id_constant REL id_constant | id_constant | boolean   ;
 
 
+//print("....", a);
+print_function: PRINT LEFTPAR STRING COMMA ID  RIGHTPAR ';';
 
-print_function: PRINT LEFTPAR STRING COMMA ID ;
+//1+a;
+math: number_id OPER number_id ;  
 
-
-math: id_constant OPER id_constant ;  //we have to use it
-
-boolean: ID LOG ID ;// we have to use it
+//a or b
+boolean: ID LOG ID ;
 
 
 %%

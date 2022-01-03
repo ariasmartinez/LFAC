@@ -4,14 +4,13 @@
 %}
 %option noyywrap
 %%
-[ \n\t] {}
-"{" { return STARTBLOCK; }
+
+"{" 					{ return STARTBLOCK; }
 "}"                                     { return ENDBLOCK; }
 "["                                     { return LEFTBRACKET; }
 "]"                                     { return RIGHTBRACKET; }
 "("                                     { return LEFTPAR; }
 ")"                                     { return RIGHTPAR; }
-";"                                     { return DAC; }
 ","                                     { return COMMA; }
 "="                                     { return ASSIGN; }
 "return"                                { return RETURN; }
@@ -23,6 +22,8 @@
 "if"                                    { return IF; }
 "while"                                 { return WHILE; }
 "else"                                  { return ELSE; }
+"print"					{return PRINT;}
+"void"					{return VOID;}
 "for"					{return FOR;}
 "*"|"/"                                 {return OPER;}
 "%"|"^"                                 {return OPER;}
@@ -35,12 +36,13 @@
 "++"                                    {return DOUBLEOPER; }
 "const"					{return CTE;}
 \"[^\"]*\"                              {return STRING; }
-([0-9]+)|([0-9]*\.[0-9]*)|"true"|"false"|\'[^\']\'                              { return CONSTANT; }
-[0-9]+					{return NUMBER;}
-[a-z|A-Z][a-z|A-Z|0-9|_]*                                                            { return ID; }
-"print"					{return PRINT;}
-"void"					{return VOID;}
-<*>.|\n                            { printf("Error in line %d.  %s is not recognizable.\n", yylineno, yytext); }
+"true"|"false"                            { return BOOL; }
+[0-9]+|([0-9]*\.[0-9]*)			{return NUMBER;}
+[a-z|A-Z][a-z|A-Z|0-9|_]*               { return ID; }
+[ \t] ;
+\n 				{yylineno++;}
+. 				{return yytext[0];}
+
 
 
 

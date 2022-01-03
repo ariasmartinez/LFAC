@@ -1,0 +1,12 @@
+int a;
+float b;
+b = 3;
+void f(int d)
+{
+float c;
+}
+main
+{
+int i;
+}
+
