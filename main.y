@@ -32,7 +32,10 @@ extern int yylineno;
 %token PRINT
 %token VOID
 %%
-
+/*
+things that  are not working: const int a = 3; int function(){}; ...
+things that i didnt implement: classes (i dont know how)
+*/
 
 progr : all_vars functions MAIN  block ;
 
