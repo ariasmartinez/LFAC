@@ -1,13 +1,11 @@
-%option yylineno
-%option noyywrap
 %{
-	//#include "tabla.h"
-	#include "y.tab.h"
+#include <stdio.h>
+#include "main.tab.h"
 %}
-int acarrero = 1;
+%option noyywrap
 %%
 [ \n\t] {}
-"{"                                     { return STARTBLOCK; }
+"{" { return STARTBLOCK; }
 "}"                                     { return ENDBLOCK; }
 "["                                     { return LEFTBRACKET; }
 "]"                                     { return RIGHTBRACKET; }
@@ -15,41 +13,35 @@ int acarrero = 1;
 ")"                                     { return RIGHTPAR; }
 ";"                                     { return DAC; }
 ","                                     { return COMMA; }
-"="                                     { return ASIGN; }
+"="                                     { return ASSIGN; }
 "return"                                { return RETURN; }
 "main"                                  { return MAIN; }
-"int"                                   { return PRIMITIVE; }
-"float"                                 { return PRIMITIVE; }
-"char"                                  { return PRIMITIVE; }
-"bool"					{ return PRIMITIVE;}
+"int"                                   { return TIP; }
+"float"                                 { return TIP; }
+"char"                                  { return TIP; }
+"bool"					{ return TIP;}
 "if"                                    { return IF; }
 "while"                                 { return WHILE; }
 "else"                                  { return ELSE; }
+"for"					{return FOR;}
 "*"|"/"                                 {return OPER;}
 "%"|"^"                                 {return OPER;}
+"+"|"-"                                 {return OPER;}
 "=="|"!="                               {return REL;}
-
+"<"|">"|"<="|">="                       {return REL;}
 "and"                                   {return LOG;}
 "or"                                    {return LOG;}
-
-"<"|">"|"<="|">="                       {return REL;}
 "--"                                    {return DOUBLEOPER; }
 "++"                                    {return DOUBLEOPER; }
-"+"|"-"                                   {return OPER;}
+"const"					{return CTE;}
 \"[^\"]*\"                              {return STRING; }
 ([0-9]+)|([0-9]*\.[0-9]*)|"true"|"false"|\'[^\']\'                              { return CONSTANT; }
+[0-9]+					{return NUMBER;}
 [a-z|A-Z][a-z|A-Z|0-9|_]*                                                            { return ID; }
-
+"print"					{return PRINT;}
+"void"					{return VOID;}
 <*>.|\n                            { printf("Error in line %d.  %s is not recognizable.\n", yylineno, yytext); }
-%%
-/*
-    int main (){
-    int val;
-    val = yylex();
-    while (val != 0){
-      printf("%d\n", val);
-      val = yylex();
-    }
-    exit(0);
-}
-*/
+
+
+
+

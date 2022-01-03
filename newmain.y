@@ -9,36 +9,29 @@ void yyerror( const char * msg );
 %}
 
 %start programm
-%token global_var
-%token decl_init
-%token local_var
-%token functions
-%token block
-%token inside_block
-%token decl_var
-%token decl_var_array
-%token init_var
-%token init_var_array
-%token inside_array
-%token init_cte
-%token init_cte_array
-%token decl_function
-%token return_type
-%token parameters
-%token function
-%token arguments
-%token statements
-%token statement
-%token if_statement
-%token id_constant
-%token else_statement
-%token for_statement
-%token for_condition
-%token while_statement
-%token condition
-%token math
-%token boolean
-%token print_function
+%token STARTBLOCK
+%token ENDBLOCK
+%token LEFTBRACKET
+%token RIGHTBRACKET
+%token LEFTPAR
+%token RIGHTPAR
+%token DAC
+%token COMMA
+%token ASIGN
+%token RETURN
+%token MAIN
+%token TIP
+%token IF 
+%token WHILE
+%token ELSE
+%token OPER
+%token REL
+%token LOG
+%token DOUBLEOPER
+%token STRING
+%token CONSTANT
+%token ID
+%token CTE
 %%
 global_var: global_var global_var | decl_init | %empty
 
@@ -57,9 +50,9 @@ inside_block: inside_block inside_block | local_var | statements | print_functio
 
 
 //declaration var
-decl_var : PRIMITIVE ID DAC
+decl_var : TIP ID DAC
 //declaration var array
-decl_var_array : PRIMITIVE LEFTBRACKET RIGHTBRACKET  ID DAC
+decl_var_array : TIP LEFTBRACKET RIGHTBRACKET  ID DAC
 //initialization var
 init_var: ID ASIGN CONSTANT
 //initialization var array
@@ -68,18 +61,18 @@ init_var_array: ID ASIGN LEFTBRACKET inside_array RIGHT_BRACKET
 inside_array: inside_array COMMA inside_array | CONSTANT
 
 //initialization cte
-init_cte: CTE PRIMITIVE ID ASIGN CONSTANT
+init_cte: CTE TIP ID ASIGN CONSTANT
 //initialization cte array
-init_cte_array: CTE PRIMITIVE ID LEFTBRACKET RIGHTBRACKET ASSIGN LEFTBRACKET inside_array RIGHTBRACKET
+init_cte_array: CTE TIP ID LEFTBRACKET RIGHTBRACKET ASSIGN LEFTBRACKET inside_array RIGHTBRACKET
 
 //declaration function
 decl_function: return_type ID LEFTPAR parameters RIGHTPAR LEFTBRACKET block RETURN ENDLINE RIGHTBRACKET
 
 //what the function returns
-return_type: PRIMITIVE | VOID
+return_type: TIP | VOID
 
 //parameters in declaration function
-parameters: parameters COMMA parameters | PRIMITIVE ID
+parameters: parameters COMMA parameters | TIP ID
 
 //call a funcion
 function: ID LEFTPAR ARGUMENTS RIGHTPAR DAC
@@ -92,7 +85,7 @@ statement: if_statement | for_statement | while_statement
 
 if_statement: IF LEFTPAR id_constant REL  id_constant RIGHTPAR block else_statement
 
-id_constant = ID|CONSTANT
+id_constant : ID|CONSTANT
 
 else_statement: ELSE block
 
