@@ -9,10 +9,10 @@
 "="                                     { return ASSIGN; }
 "return"                                { return RETURN; }
 "main"                                  { return MAIN; }
-"int"                                   { return TIP; }
-"float"                                 { return TIP; }
-"char"                                  { return TIP; }
-"bool"					                { return TIP;}
+"int"                                   {strcpy(yylval.strval,yytext); return TIP; }
+"float"                                 { strcpy(yylval.strval,yytext); return TIP; }
+"char"                                  { strcpy(yylval.strval,yytext); return TIP; }
+"bool"					                {strcpy(yylval.strval,yytext); return TIP;}
 "if"                                    { return IF; }
 "while"                                 { return WHILE; }
 "else"                                  { return ELSE; }
@@ -20,8 +20,8 @@
 "void"					                {return VOID;}
 "for"					                {return FOR;}
 "*"|"/"                                 {return OPER;}
-"%"|"^"                                 {return OPER;}
-"+"|"-"                                 {return OPER;}
+"%"|"^"                                 {OPER return;}
+"+"|"-"                                 {OPER return;}
 "=="|"!="                               {return REL;}
 "<"|">"|"<="|">="                       {return REL;}
 "and"                                   {return LOG;}
@@ -32,8 +32,8 @@
 "function"                              {return FNCT;}
 \"[^\"]*\"                              {return STRING; }
 "true"|"false"                          {return BOOL; }
-[0-9]+|([0-9]*\.[0-9]*)			        {return NUMBER;}
-[a-z|A-Z][a-z|A-Z|0-9|_]*               {return ID; }
+[0-9]+			        {yylval.intval = atoi(yytext); return NUMBER;}
+[a-z|A-Z][a-z|A-Z|0-9|_]*               {strcpy(yylval.strval,yytexy); return ID; }
 [ \t] ;
 \n 				{yylineno++;}
 . 				{return yytext[0];}

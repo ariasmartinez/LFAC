@@ -16,7 +16,7 @@ union value{
 struct variable{
 	char name;
 	char *type;
-	int val;
+	var_type val;
 }vars[100];
 
 int noVars = 0;
